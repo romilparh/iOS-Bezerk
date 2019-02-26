@@ -265,16 +265,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             }
             
         } else if(nodeA?.name == "wall" && nodeB?.name == "enemy"){
-            let moveAction: SKAction = SKAction.moveBy(x: self.player.position.x-self.enemy.position.x, y: self.player.position.y-self.enemy.position.y, duration: 1)
-            self.enemy.run(moveAction)
-            print(self.player.position.x-self.enemy.position.x)
-            print(self.player.position.y-self.enemy.position.y)
+            self.updateEnemyPosition()
         } else if(nodeA?.name == "wallTwo" && nodeB?.name == "enemy"){
-            let moveAction: SKAction = SKAction.moveBy(x: self.player.position.x-self.enemy.position.x, y: self.player.position.y-self.enemy.position.y, duration: 1)
-            self.enemy.run(moveAction)
+            self.updateEnemyPosition()
         } else{
-            let moveAction: SKAction = SKAction.moveBy(x: self.player.position.x-self.enemy.position.x, y: self.player.position.y-self.enemy.position.y, duration: 1)
-            self.enemy.run(moveAction)
+            self.updateEnemyPosition()
         }
         
     }
@@ -282,6 +277,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     // Function to Restart Game
     func restartGame() {
         playerObject.resetLives()
+        playerObject.gameOver = false
         let scene = GameScene(fileNamed:"BerzerkLevel1")
         print(scene)
         scene!.scaleMode = scaleMode
@@ -308,7 +304,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func updateEnemyPosition(){
-        let moveAction: SKAction = SKAction.moveBy(x: self.player.position.x-self.enemy.position.x, y: self.player.position.y-self.enemy.position.y, duration: 1)
+        let moveAction: SKAction = SKAction.moveBy(x: self.player.position.x-self.enemy.position.x, y: self.player.position.y-self.enemy.position.y, duration: 10)
         self.enemy.run(moveAction)
     }
 }
