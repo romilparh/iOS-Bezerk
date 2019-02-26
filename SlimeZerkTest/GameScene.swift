@@ -71,33 +71,38 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         // get labels from Scene Editor
         self.livesLabel = self.childNode(withName: "livesLabel") as! SKLabelNode
+        self.livesLabel.text?.append(String(playerObject.returnLives()))
         
         // Set Physics Bodies and properties
         
-        // Player Physics Body and Collision Bits
-        player.physicsBody = SKPhysicsBody(circleOfRadius: player.size.width / 2)
+        // Player Physics Body
+        self.player.physicsBody = SKPhysicsBody(circleOfRadius: player.size.width / 2)
         self.player.physicsBody?.affectedByGravity = false
-        player.physicsBody?.isDynamic=true
-        player.physicsBody?.categoryBitMask = 1
-        player.physicsBody!.contactTestBitMask = 16
-        player.physicsBody!.contactTestBitMask = 4
-        player.physicsBody!.contactTestBitMask = 2
-        player.physicsBody?.collisionBitMask = 4+1
-        player.physicsBody?.collisionBitMask = 2+1
+        self.player.physicsBody?.isDynamic=true
+        self.player.xScale = 0.8
         
-        // Exit Physics Body and Collision Bits
-        exit.physicsBody = SKPhysicsBody(rectangleOf: exit.frame.size)
+        // Exit Physics Body
+        self.exit.physicsBody = SKPhysicsBody(rectangleOf: exit.frame.size)
         self.exit.physicsBody?.affectedByGravity = false
-        exit.physicsBody!.categoryBitMask = 4
+        self.exit.physicsBody?.isDynamic = true
         
-        // Wall Physics Body and Collision Bits
-        wall.physicsBody = SKPhysicsBody(rectangleOf: wall.frame.size)
-        self.wall.physicsBody?.affectedByGravity = false
-        wall.physicsBody!.categoryBitMask = 16
+        // Wall Physics Body
+       // wall.physicsBody = SKPhysicsBody(rectangleOf: wall.frame.size)
+        //self.wall.physicsBody?.affectedByGravity = false
+        //self.wall.physicsBody?.isDynamic = true
+        //wallTwo.physicsBody = SKPhysicsBody(rectangleOf: wallTwo.frame.size)
+        //self.wallTwo.physicsBody?.affectedByGravity = false
+        //self.wallTwo.physicsBody?.isDynamic = true
         
-        wallTwo.physicsBody = SKPhysicsBody(rectangleOf: wallTwo.frame.size)
-        self.wallTwo.physicsBody?.affectedByGravity = false
-        wallTwo.physicsBody!.categoryBitMask = 16
+        
+        self.player.physicsBody?.categoryBitMask = 1
+        self.player.physicsBody!.contactTestBitMask = 3
+        //player.physicsBody!.contactTestBitMask = 4
+        //player.physicsBody!.contactTestBitMask = 2
+        //exit.physicsBody!.categoryBitMask = 4
+        self.player.physicsBody?.collisionBitMask = 3
+        //wall.physicsBody!.categoryBitMask = 4
+        //wallTwo.physicsBody!.categoryBitMask = 4
         
         // Setup Enemy
         self.spawnEnemy()
@@ -116,15 +121,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         // Add Physics to Enemy
         self.enemy.physicsBody = SKPhysicsBody(circleOfRadius: enemy.size.width / 2)
-        
-        // Velocity Towards Something
-        self.enemy.physicsBody?.velocity = CGVector(dx: -100, dy: -100)
+    
         self.enemy.physicsBody?.affectedByGravity = false
         
         // Make Enemy Bounce
         self.enemy.physicsBody!.restitution = 1.0
-        self.enemy.physicsBody!.categoryBitMask = 2;
+        self.enemy.physicsBody!.categoryBitMask = 2
+        self.enemy.physicsBody!.contactTestBitMask = 3
+        self.enemy.physicsBody?.collisionBitMask = 3
         
+        let moveAction: SKAction = SKAction.moveBy(x: self.player.position.x-self.enemy.position.x, y: self.player.position.y-self.enemy.position.y, duration: 5)
+        self.enemy.run(moveAction)
         
     }
     
@@ -149,16 +156,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             }
         }else if (spriteTouched.name == "rightButton") {
             let movePlayer = SKAction.moveTo(x: player.position.x+30, duration: 0)
-            player.run(movePlayer)
+            self.player.xScale = 0.8
+            self.player.run(movePlayer)
         } else if(spriteTouched.name == "leftButton"){
             if(player.position.x<=0){
             } else{
                 let movePlayer = SKAction.moveTo(x: player.position.x-30, duration: 0)
-                player.run(movePlayer)
+                self.player.xScale = -0.8
+                self.player.run(movePlayer)
             }
         } else if(spriteTouched.name == "bButton"){
             let movePlayer = SKAction.moveTo(x: player.position.x+90, duration: 1)
-            player.run(movePlayer)
+            self.player.run(movePlayer)
         } else if(spriteTouched.name == "musicButton"){
             //testSound.play()
             if(self.playMusic == true){
@@ -187,6 +196,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         // HINT: This code prints "Hello world" every 5 seconds
         if (dt > 1) {
             self.lastUpdateTime = currentTime
+            self.updateEnemyPosition()
         }
         
     }
@@ -198,20 +208,52 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         print("Collision: \(nodeA?.name) hit \(nodeB?.name)")
         if(nodeA?.name == "exit" && nodeB?.name == "player"){
             print("RESET")
-            self.restartGame()
+            if(sceneSelector.scene){
+                sceneSelector.changeBool()
+                self.startLevelOne()
+            } else{
+                sceneSelector.changeBool()
+                self.startLevelTwo()
+            }
         } else if(nodeA?.name == "player" && nodeB?.name == "enemy"){
-            self.restartGame()
+            if(playerObject.returnLives() == 0){
+                self.restartGame()
+            } else {
+                playerObject.reduceLives()
+                if(sceneSelector.scene){
+                    self.startLevelTwo()
+                } else{
+                    self.startLevelOne()
+                }
+            }
+            
+        } else if(nodeA?.name == "wall" && nodeB?.name == "enemy"){
+            let moveAction: SKAction = SKAction.moveBy(x: self.player.position.x-self.enemy.position.x, y: self.player.position.y-self.enemy.position.y, duration: 1)
+            self.enemy.run(moveAction)
+            print(self.player.position.x-self.enemy.position.x)
+            print(self.player.position.y-self.enemy.position.y)
+        } else if(nodeA?.name == "wallTwo" && nodeB?.name == "enemy"){
+            let moveAction: SKAction = SKAction.moveBy(x: self.player.position.x-self.enemy.position.x, y: self.player.position.y-self.enemy.position.y, duration: 1)
+            self.enemy.run(moveAction)
+            print(self.player.position.x-self.enemy.position.x)
+            print(self.player.position.y-self.enemy.position.y)
+        } else{
+            let moveAction: SKAction = SKAction.moveBy(x: self.player.position.x-self.enemy.position.x, y: self.player.position.y-self.enemy.position.y, duration: 1)
+            self.enemy.run(moveAction)
+            print(self.player.position.x-self.enemy.position.x)
+            print(self.player.position.y-self.enemy.position.y)
         }
         
     }
     
     // Function to Restart Game
     func restartGame() {
-        // load Level2.sks
-        let scene = GameScene(fileNamed:"BerzerkLevel2")
+        playerObject.resetLives()
+        let scene = GameScene(fileNamed:"BerzerkLevel1")
         print(scene)
         scene!.scaleMode = scaleMode
         view!.presentScene(scene)
+        
     }
     
     // Function to Go to Level 2
@@ -230,5 +272,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         print(scene)
         scene!.scaleMode = scaleMode
         view!.presentScene(scene)
+    }
+    
+    func updateEnemyPosition(){
+        let moveAction: SKAction = SKAction.moveBy(x: self.player.position.x-self.enemy.position.x, y: self.player.position.y-self.enemy.position.y, duration: 1)
+        self.enemy.run(moveAction)
+        print(self.player.position.x-self.enemy.position.x)
+        print(self.player.position.y-self.enemy.position.y)
     }
 }
