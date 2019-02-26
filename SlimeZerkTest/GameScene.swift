@@ -8,11 +8,12 @@
 
 import SpriteKit
 import GameplayKit
-import AudioToolbox
 
 class GameScene: SKScene, SKPhysicsContactDelegate {
+    
     // MARK: Variables for tracking time
     private var lastUpdateTime : TimeInterval = 0
+    
     // MARK: Sprite variables
     var player:SKSpriteNode = SKSpriteNode()
     var upButton:SKSpriteNode = SKSpriteNode()
@@ -21,36 +22,38 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var leftButton:SKSpriteNode = SKSpriteNode()
     var bButton: SKSpriteNode = SKSpriteNode()
     var musicButton: SKSpriteNode = SKSpriteNode()
-    
-    // MARK: Label variables
-    var livesLabel:SKLabelNode = SKLabelNode(text:"")
     var wall:SKSpriteNode = SKSpriteNode()
     var wallTwo:SKSpriteNode = SKSpriteNode()
     var exit:SKSpriteNode = SKSpriteNode()
-    
     var enemy: SKSpriteNode = SKSpriteNode()
     
-    var musicItem:SKSpriteNode = SKSpriteNode()
+    // MARK: Label variables
+    var livesLabel:SKLabelNode = SKLabelNode(text:"")
     
-    let testSound: Sound = Sound(name: "BackgroundMusic/ActionFighter", type: "wav")
+    
+    // MARK: Background Sound Variable
+    var musicItem:SKSpriteNode = SKSpriteNode()
+    let backgroundSound = SKAudioNode(fileNamed: "BackgroundMusic/ActionFighter")
+    var playMusic: Bool = true
     
     // MARK: Scoring and Lives variables
     
     
     // MARK: Game state variables
     
-    var shapeNode = SKShapeNode()
-    
     // MARK: Default GameScene functions
     // -------------------------------------
-    override func didMove(to view: SKView) {
-        physicsWorld.contactDelegate = self
     
+    override func didMove(to view: SKView) {
+        
+        // Collision Detection Shit
+        physicsWorld.contactDelegate = self
         self.physicsBody = SKPhysicsBody(edgeLoopFrom: self.frame)
         
+        // Last Update Time Initialization
         self.lastUpdateTime = 0
         
-        // get sprites from Scene Editor
+        // Get Sprites from Scene Editor
         self.player = self.childNode(withName: "player") as! SKSpriteNode
         self.upButton = self.childNode(withName: "upButton") as! SKSpriteNode
         self.downButton = self.childNode(withName: "downButton") as! SKSpriteNode
@@ -62,22 +65,32 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         self.wallTwo = self.childNode(withName: "wallTwo") as! SKSpriteNode
         self.musicItem = self.childNode(withName: "musicButton") as! SKSpriteNode
         
+        // Add Background Sound Child Node
+        self.addChild(backgroundSound)
         
         
         // get labels from Scene Editor
         self.livesLabel = self.childNode(withName: "livesLabel") as! SKLabelNode
         
+        // Set Physics Bodies and properties
+        
+        // Player Physics Body and Collision Bits
         player.physicsBody = SKPhysicsBody(circleOfRadius: player.size.width / 2)
         self.player.physicsBody?.affectedByGravity = false
+        player.physicsBody?.isDynamic=true
         player.physicsBody?.categoryBitMask = 1
         player.physicsBody!.contactTestBitMask = 16
         player.physicsBody!.contactTestBitMask = 4
         player.physicsBody!.contactTestBitMask = 2
+        player.physicsBody?.collisionBitMask = 4+1
+        player.physicsBody?.collisionBitMask = 2+1
         
+        // Exit Physics Body and Collision Bits
         exit.physicsBody = SKPhysicsBody(rectangleOf: exit.frame.size)
         self.exit.physicsBody?.affectedByGravity = false
         exit.physicsBody!.categoryBitMask = 4
         
+        // Wall Physics Body and Collision Bits
         wall.physicsBody = SKPhysicsBody(rectangleOf: wall.frame.size)
         self.wall.physicsBody?.affectedByGravity = false
         wall.physicsBody!.categoryBitMask = 16
@@ -86,30 +99,29 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         self.wallTwo.physicsBody?.affectedByGravity = false
         wallTwo.physicsBody!.categoryBitMask = 16
         
-        player.physicsBody?.isDynamic=true
-        
-        player.physicsBody?.collisionBitMask = 4+1
-        player.physicsBody?.collisionBitMask = 2+1
+        // Setup Enemy
         self.spawnEnemy()
-        
     }
     
     func spawnEnemy() {
         self.enemy = self.childNode(withName: "enemy") as! SKSpriteNode
         self.enemy.size = CGSize(width: 100, height: 100)
         self.enemy.physicsBody?.isDynamic = true
-        // put sand at a random (x,y) position
+        
+        // Put Enemy at random Location
         let x = self.size.width/2
         let y = self.size.height - 100
         self.enemy.position.x = x
         self.enemy.position.y = y
         
-        // add physics
+        // Add Physics to Enemy
         self.enemy.physicsBody = SKPhysicsBody(circleOfRadius: enemy.size.width / 2)
+        
+        // Velocity Towards Something
         self.enemy.physicsBody?.velocity = CGVector(dx: -100, dy: -100)
         self.enemy.physicsBody?.affectedByGravity = false
         
-        // make sand bounce
+        // Make Enemy Bounce
         self.enemy.physicsBody!.restitution = 1.0
         self.enemy.physicsBody!.categoryBitMask = 2;
         
@@ -148,16 +160,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             let movePlayer = SKAction.moveTo(x: player.position.x+90, duration: 1)
             player.run(movePlayer)
         } else if(spriteTouched.name == "musicButton"){
-            testSound.play()
+            //testSound.play()
+            if(self.playMusic == true){
+                self.backgroundSound.run(SKAction.stop())
+                self.playMusic = false
+            } else if(self.playMusic == false){
+                self.backgroundSound.run(SKAction.play())
+                self.playMusic = true
+            }
+            
         }
-        
-    }
-    
-    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
-       
-    }
-    
-    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         
     }
     
@@ -168,10 +180,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if (self.lastUpdateTime == 0) {
             self.lastUpdateTime = currentTime
         }
-
+        
         // Calculate time since last update
         let dt = currentTime - self.lastUpdateTime
-    
+        
         // HINT: This code prints "Hello world" every 5 seconds
         if (dt > 1) {
             self.lastUpdateTime = currentTime
@@ -179,10 +191,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
     }
     
-    // MARK: Custom GameScene Functions
-    // Your custom functions can go here
-    // -------------------------------------
-    
+    // This Function Checks for any Collisions
     func didBegin(_ contact: SKPhysicsContact) {
         let nodeA = contact.bodyA.node
         let nodeB = contact.bodyB.node
@@ -196,6 +205,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
     }
     
+    // Function to Restart Game
     func restartGame() {
         // load Level2.sks
         let scene = GameScene(fileNamed:"BerzerkLevel2")
@@ -204,19 +214,21 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         view!.presentScene(scene)
     }
     
-    class Sound {
-        
-        var soundEffect: SystemSoundID = 0
-        init(name: String, type: String) {
-            let path  = Bundle.main.path(forResource: name, ofType: type)!
-            let pathURL = NSURL(fileURLWithPath: path)
-            AudioServicesCreateSystemSoundID(pathURL as CFURL, &soundEffect)
-        }
-        
-        func play() {
-            AudioServicesPlaySystemSound(soundEffect)
-        }
+    // Function to Go to Level 2
+    func startLevelTwo() {
+        // load Level2.sks
+        let scene = GameScene(fileNamed:"BerzerkLevel2")
+        print(scene)
+        scene!.scaleMode = scaleMode
+        view!.presentScene(scene)
     }
     
-    
+    // Function to go to Level 1
+    func startLevelOne() {
+        // load Level1.sks
+        let scene = GameScene(fileNamed:"BerzerkLevel1")
+        print(scene)
+        scene!.scaleMode = scaleMode
+        view!.presentScene(scene)
+    }
 }
