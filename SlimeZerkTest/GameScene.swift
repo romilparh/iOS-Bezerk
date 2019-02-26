@@ -26,10 +26,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var wallTwo:SKSpriteNode = SKSpriteNode()
     var exit:SKSpriteNode = SKSpriteNode()
     var enemy: SKSpriteNode = SKSpriteNode()
+    var reset: SKSpriteNode = SKSpriteNode()
     
     // MARK: Label variables
     var livesLabel:SKLabelNode = SKLabelNode(text:"")
-    
+    var scoreLabel:SKLabelNode = SKLabelNode(text:"")
     
     // MARK: Background Sound Variable
     var musicItem:SKSpriteNode = SKSpriteNode()
@@ -64,6 +65,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         self.wall = self.childNode(withName: "wall") as! SKSpriteNode
         self.wallTwo = self.childNode(withName: "wallTwo") as! SKSpriteNode
         self.musicItem = self.childNode(withName: "musicButton") as! SKSpriteNode
+        self.reset = self.childNode(withName: "reset") as! SKSpriteNode
         
         // Add Background Sound Child Node
         self.addChild(backgroundSound)
@@ -71,7 +73,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         // get labels from Scene Editor
         self.livesLabel = self.childNode(withName: "livesLabel") as! SKLabelNode
-        self.livesLabel.text?.append(String(playerObject.returnLives()))
+        self.livesLabel.text?.append(String(playerObject.returnLives()+1))
+        
+        self.scoreLabel = self.childNode(withName: "scoreLabel") as! SKLabelNode
+        self.scoreLabel.text?.append(String(playerObject.returnScore()))
         
         // Set Physics Bodies and properties
         
@@ -178,6 +183,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 self.playMusic = true
             }
             
+        } else if(spriteTouched.name == "reset"){
+            self.restartGame()
         }
         
     }
@@ -196,6 +203,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         // HINT: This code prints "Hello world" every 5 seconds
         if (dt > 1) {
             self.lastUpdateTime = currentTime
+            
             self.updateEnemyPosition()
         }
         
@@ -207,7 +215,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let nodeB = contact.bodyB.node
         print("Collision: \(nodeA?.name) hit \(nodeB?.name)")
         if(nodeA?.name == "exit" && nodeB?.name == "player"){
-            print("RESET")
             if(sceneSelector.scene){
                 sceneSelector.changeBool()
                 self.startLevelOne()
@@ -217,7 +224,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             }
         } else if(nodeA?.name == "player" && nodeB?.name == "enemy"){
             if(playerObject.returnLives() == 0){
-                self.restartGame()
+                let labelNode = SKLabelNode()
+                labelNode.fontSize = 80
+                labelNode.position.y = self.frame.maxY/2
+                labelNode.position.x = self.frame.maxX/2
+                labelNode.color = #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
+                labelNode.text = "GAME OVER"
+                addChild(labelNode)
+                //self.restartGame()
             } else {
                 playerObject.reduceLives()
                 if(sceneSelector.scene){
@@ -235,13 +249,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         } else if(nodeA?.name == "wallTwo" && nodeB?.name == "enemy"){
             let moveAction: SKAction = SKAction.moveBy(x: self.player.position.x-self.enemy.position.x, y: self.player.position.y-self.enemy.position.y, duration: 1)
             self.enemy.run(moveAction)
-            print(self.player.position.x-self.enemy.position.x)
-            print(self.player.position.y-self.enemy.position.y)
         } else{
             let moveAction: SKAction = SKAction.moveBy(x: self.player.position.x-self.enemy.position.x, y: self.player.position.y-self.enemy.position.y, duration: 1)
             self.enemy.run(moveAction)
-            print(self.player.position.x-self.enemy.position.x)
-            print(self.player.position.y-self.enemy.position.y)
         }
         
     }
@@ -277,7 +287,5 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func updateEnemyPosition(){
         let moveAction: SKAction = SKAction.moveBy(x: self.player.position.x-self.enemy.position.x, y: self.player.position.y-self.enemy.position.y, duration: 1)
         self.enemy.run(moveAction)
-        print(self.player.position.x-self.enemy.position.x)
-        print(self.player.position.y-self.enemy.position.y)
     }
 }

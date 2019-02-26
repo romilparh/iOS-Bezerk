@@ -9,10 +9,12 @@
 import Foundation
 
 class Player{
-    var lives: Int;
+    var lives: Int
+    var score: Int
     
     init(){
         self.lives = 3
+        self.score = 0
     }
     
     func reduceLives(){
@@ -24,6 +26,14 @@ class Player{
     }
     func resetLives(){
         self.lives = 3
+    }
+    
+    func increaseScore(){
+        self.score = self.score + 1
+    }
+    
+    func returnScore()->Int{
+        return self.score
     }
 }
 

@@ -16,11 +16,11 @@
 		056CD7232224112A00016795 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 056CD7212224112A00016795 /* LaunchScreen.storyboard */; };
 		057B939D2224142A00753697 /* Koopa.atlas in Resources */ = {isa = PBXBuildFile; fileRef = 057B939C2224142A00753697 /* Koopa.atlas */; };
 		057B93A2222417FD00753697 /* BerzerkLevel2.sks in Resources */ = {isa = PBXBuildFile; fileRef = 057B93A0222417FD00753697 /* BerzerkLevel2.sks */; };
-		057B93A3222417FD00753697 /* BerzerkLevel1.sks in Resources */ = {isa = PBXBuildFile; fileRef = 057B93A1222417FD00753697 /* BerzerkLevel1.sks */; };
 		057B93A522242A2E00753697 /* BackgroundMusic in Resources */ = {isa = PBXBuildFile; fileRef = 057B93A422242A2D00753697 /* BackgroundMusic */; };
 		183616C72224493D001D8632 /* Bullet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 183616C62224493D001D8632 /* Bullet.swift */; };
 		183616C9222521E3001D8632 /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = 183616C8222521E3001D8632 /* Player.swift */; };
 		183616CB22253302001D8632 /* Scene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 183616CA22253302001D8632 /* Scene.swift */; };
+		183616CD222548FD001D8632 /* BerzerkLevel1.sks in Resources */ = {isa = PBXBuildFile; fileRef = 183616CC222548FD001D8632 /* BerzerkLevel1.sks */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -35,11 +35,11 @@
 		056CD7242224112A00016795 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		057B939C2224142A00753697 /* Koopa.atlas */ = {isa = PBXFileReference; lastKnownFileType = folder.skatlas; path = Koopa.atlas; sourceTree = "<group>"; };
 		057B93A0222417FD00753697 /* BerzerkLevel2.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = BerzerkLevel2.sks; sourceTree = "<group>"; };
-		057B93A1222417FD00753697 /* BerzerkLevel1.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = BerzerkLevel1.sks; sourceTree = "<group>"; };
 		057B93A422242A2D00753697 /* BackgroundMusic */ = {isa = PBXFileReference; lastKnownFileType = folder; path = BackgroundMusic; sourceTree = "<group>"; };
 		183616C62224493D001D8632 /* Bullet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bullet.swift; sourceTree = "<group>"; };
 		183616C8222521E3001D8632 /* Player.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Player.swift; sourceTree = "<group>"; };
 		183616CA22253302001D8632 /* Scene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Scene.swift; sourceTree = "<group>"; };
+		183616CC222548FD001D8632 /* BerzerkLevel1.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = BerzerkLevel1.sks; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -75,8 +75,8 @@
 				057B93A422242A2D00753697 /* BackgroundMusic */,
 				057B939C2224142A00753697 /* Koopa.atlas */,
 				056CD7122224112A00016795 /* AppDelegate.swift */,
-				057B93A1222417FD00753697 /* BerzerkLevel1.sks */,
 				183616CA22253302001D8632 /* Scene.swift */,
+				183616CC222548FD001D8632 /* BerzerkLevel1.sks */,
 				183616C62224493D001D8632 /* Bullet.swift */,
 				057B93A0222417FD00753697 /* BerzerkLevel2.sks */,
 				056CD7162224112A00016795 /* Actions.sks */,
@@ -155,8 +155,8 @@
 				057B939D2224142A00753697 /* Koopa.atlas in Resources */,
 				056CD7202224112A00016795 /* Assets.xcassets in Resources */,
 				057B93A2222417FD00753697 /* BerzerkLevel2.sks in Resources */,
-				057B93A3222417FD00753697 /* BerzerkLevel1.sks in Resources */,
 				056CD7232224112A00016795 /* LaunchScreen.storyboard in Resources */,
+				183616CD222548FD001D8632 /* BerzerkLevel1.sks in Resources */,
 				056CD7172224112A00016795 /* Actions.sks in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
