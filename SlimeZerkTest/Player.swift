@@ -11,6 +11,7 @@ import Foundation
 class Player{
     var lives: Int
     var score: Int
+    var gameOver: Bool = false
     
     init(){
         self.lives = 3

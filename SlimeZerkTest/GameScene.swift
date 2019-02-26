@@ -150,42 +150,64 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         let spriteTouched = self.atPoint(mousePosition!)
         
-        if (spriteTouched.name == "upButton") {
-            let movePlayer = SKAction.moveTo(y: player.position.y+30, duration: 0)
-            player.run(movePlayer)
-        } else if(spriteTouched.name == "downButton"){
-            if(player.position.y<=0){
-            } else{
-                let movePlayer = SKAction.moveTo(y: player.position.y-30, duration: 0)
+        if(playerObject.gameOver == false){
+            if (spriteTouched.name == "upButton") {
+                let movePlayer = SKAction.moveTo(y: player.position.y+30, duration: 0)
                 player.run(movePlayer)
-            }
-        }else if (spriteTouched.name == "rightButton") {
-            let movePlayer = SKAction.moveTo(x: player.position.x+30, duration: 0)
-            self.player.xScale = 0.8
-            self.player.run(movePlayer)
-        } else if(spriteTouched.name == "leftButton"){
-            if(player.position.x<=0){
-            } else{
-                let movePlayer = SKAction.moveTo(x: player.position.x-30, duration: 0)
-                self.player.xScale = -0.8
+            } else if(spriteTouched.name == "downButton"){
+                if(player.position.y<=0){
+                } else{
+                    let movePlayer = SKAction.moveTo(y: player.position.y-30, duration: 0)
+                    player.run(movePlayer)
+                }
+            }else if (spriteTouched.name == "rightButton") {
+                let movePlayer = SKAction.moveTo(x: player.position.x+30, duration: 0)
+                self.player.xScale = 0.8
                 self.player.run(movePlayer)
+            } else if(spriteTouched.name == "leftButton"){
+                if(player.position.x<=0){
+                } else{
+                    let movePlayer = SKAction.moveTo(x: player.position.x-30, duration: 0)
+                    self.player.xScale = -0.8
+                    self.player.run(movePlayer)
+                }
+            } else if(spriteTouched.name == "bButton"){
+                let movePlayer = SKAction.moveTo(x: player.position.x+90, duration: 1)
+                self.player.run(movePlayer)
+            } else if(spriteTouched.name == "musicButton"){
+                //testSound.play()
+                if(self.playMusic == true){
+                    self.backgroundSound.run(SKAction.stop())
+                    self.playMusic = false
+                } else if(self.playMusic == false){
+                    self.backgroundSound.run(SKAction.play())
+                    self.playMusic = true
+                }
+                
+            } else if(spriteTouched.name == "reset"){
+                self.restartGame()
             }
-        } else if(spriteTouched.name == "bButton"){
-            let movePlayer = SKAction.moveTo(x: player.position.x+90, duration: 1)
-            self.player.run(movePlayer)
-        } else if(spriteTouched.name == "musicButton"){
-            //testSound.play()
-            if(self.playMusic == true){
-                self.backgroundSound.run(SKAction.stop())
-                self.playMusic = false
-            } else if(self.playMusic == false){
-                self.backgroundSound.run(SKAction.play())
-                self.playMusic = true
+        } else{
+            if (spriteTouched.name == "upButton") {
+            } else if(spriteTouched.name == "downButton"){
+            }else if (spriteTouched.name == "rightButton") {
+            } else if(spriteTouched.name == "leftButton"){
+            } else if(spriteTouched.name == "bButton"){
+            } else if(spriteTouched.name == "musicButton"){
+                //testSound.play()
+                if(self.playMusic == true){
+                    self.backgroundSound.run(SKAction.stop())
+                    self.playMusic = false
+                } else if(self.playMusic == false){
+                    self.backgroundSound.run(SKAction.play())
+                    self.playMusic = true
+                }
+                
+            } else if(spriteTouched.name == "reset"){
+                self.restartGame()
             }
-            
-        } else if(spriteTouched.name == "reset"){
-            self.restartGame()
         }
+        
         
     }
     
@@ -231,6 +253,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 labelNode.color = #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
                 labelNode.text = "GAME OVER"
                 addChild(labelNode)
+                playerObject.gameOver = true
                 //self.restartGame()
             } else {
                 playerObject.reduceLives()
